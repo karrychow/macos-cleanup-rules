@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "macOS Cleanup Rules Manifest",
+  "type": "object",
+  "required": ["version", "rules"],
+  "additionalProperties": false,
+  "properties": {
+    "version": { "type": "integer", "minimum": 1 },
+    "rules": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/AppRule" },
+      "minItems": 1
+    }
+  },
+  "definitions": {
+    "AppRule": {
+      "type": "object",
+      "required": ["id", "name", "paths"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^[A-Za-z0-9.-]+$" },
+        "name": { "type": "string", "minLength": 1 },
+        "homepage": { "type": "string", "format": "uri" },
+        "paths": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/PathRule" },
+          "minItems": 1
+        }
+      }
+    },
+    "PathRule": {
+      "type": "object",
+      "required": ["path"],
+      "additionalProperties": false,
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "type": {
+          "type": "string",
+          "enum": ["cache", "logs", "state", "support", "preference", "temp", "misc"]
+        },
+        "danger_level": {
+          "type": "string",
+          "enum": ["safe", "caution", "danger"],
+          "default": "safe"
+        },
+        "recommendation": {
+          "type": "string",
+          "enum": ["remove", "review", "keep"],
+          "default": "review"
+        },
+        "comment": { "type": "string" },
+        "os": { "type": "string", "enum": ["macos"], "default": "macos" },
+        "since": { "type": "string" }
+      }
+    }
+  }
+}
