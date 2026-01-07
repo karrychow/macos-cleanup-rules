@@ -1,0 +1,26 @@
+name: Validate Rules
+
+on:
+  pull_request:
+    paths:
+      - "rules.json"
+      - "schema.json"
+      - ".github/workflows/validate-rules.yml"
+
+jobs:
+  ajv-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install ajv-cli
+        run: npm i -g ajv-cli
+
+      - name: Validate rules.json against schema.json
+        run: ajv validate -s schema.json -d rules.json --strict=false
